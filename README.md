@@ -2,11 +2,11 @@
 
 Smush is just a simple utility that uses the Gzip library to do the following:
 
-o Look into a directory and match file names based on CLI flag
-o It can/will also watch for files with a specific suffix (.log, .txt, etc.)
-o There is a default file match that is yesterday's date that follows this format:
-o 2023-05-28 (YYYY-MM-DD)
-o The match string is configurable but you are only allowed one match string
+- Look into a directory and match file names based on CLI flag
+- It can/will also watch for files with a specific suffix (.log, .txt, etc.)
+- There is a default file match that is yesterday's date that follows this format:
+  - 2023-05-28 (YYYY-MM-DD)
+- The match string is configurable but you are only allowed one match string
 
 - You can run this as a daemon or as a one off via cron or what have you.
 

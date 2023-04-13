@@ -8,13 +8,13 @@ SHELL := bash
 
 test:
 	@echo "Running test endpoint with flags..."
-	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -m file -s log -m file_7 -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
-	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -m file -s log -m file_8 -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
-	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -s log -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
+	go run cmd/cli/main.go -dir /Users/user/tmp/smush/ -m file -s log -m file_7 -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
+	go run cmd/cli/main.go -dir /Users/user/tmp/smush/ -m file -s log -m file_8 -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
+	go run cmd/cli/main.go -dir /Users/user/tmp/smush/ -s log -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
 
 clean:
 	@echo "Cleaning test directory..."
-	-gunzip /Users/james/tmp/smush/*.gz
+	-gunzip /Users/user/tmp/smush/*.gz
 
 build:
 	@echo "Building Binary"

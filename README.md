@@ -1,4 +1,5 @@
 # SMUSH
+Please consider this currently like... pre-pre-alpha. I doodle when I feel like it.
 
 Smush is just a simple utility that uses the Gzip library to do the following:
 
@@ -19,7 +20,7 @@ Smush is just a simple utility that uses the Gzip library to do the following:
 ---
 
 ```
-O_O[james@tethys:~/devel/github.com/glassrye/smush]$ go run cmd/cli/main.go  --help
+O_O[user@tethys:~/devel/github.com/glassrye/smush]$ go run cmd/cli/main.go  --help
 Old Match  2022-10-16
 Usage of /var/folders/4x/6f286ndx6b71brrg5s8j_wx40000gn/T/go-build1093124682/b001/exe/main:
   -db string
@@ -38,5 +39,7 @@ Usage of /var/folders/4x/6f286ndx6b71brrg5s8j_wx40000gn/T/go-build1093124682/b00
         The filename suffix to use. (default "log")
   -user string
         The user name for the database connection. AKA: DB_USER env variable
-^_^[james@tethys:~/devel/github.com/glassrye/smush]$
+^_^[user@tethys:~/devel/github.com/glassrye/smush]$
 ```
+
+## NOTE: DB features are under construction

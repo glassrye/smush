@@ -8,9 +8,9 @@ SHELL := bash
 
 test:
 	@echo "Running test endpoint with flags..."
-	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -m file -s log -m file_7 -user logger -pass pickle32 -host 10.63.0.27 -db logtrack -e local.env
-	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -m file -s log -m file_8 -user logger -pass pickle32 -host 10.63.0.27 -db logtrack -e local.env
-	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -s log -user logger -pass pickle32 -host 10.63.0.27 -db logtrack -e local.env
+	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -m file -s log -m file_7 -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
+	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -m file -s log -m file_8 -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
+	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -s log -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
 
 clean:
 	@echo "Cleaning test directory..."

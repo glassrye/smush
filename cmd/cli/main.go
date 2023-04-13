@@ -120,14 +120,12 @@ func main() {
 			ArchivePrefix: "jbk-test", // this will also become dynamic
 		}
 		arch.CompressLoc, arch.OriginHash, arch.CompressHash, err = process.Compress(arch.OriginLoc)
-		// p, oh, gh, err := process.Compress(f)
 
 		if err != nil {
 			fmt.Printf("Error processing file: %v\n", err)
 			return 
 		}
-		res, err := models.AddRecord(arch.OriginHash, arch.CompressHash, arch.OriginLoc, arch.CompressLoc)
-		// res, err := models.AddRecord(oh, gh, f, p) <-- this is really old
+		res, err := arch.AddRecord()
 		if err != nil {
 			fmt.Printf("Error adding record: %v\n", err)
 			continue

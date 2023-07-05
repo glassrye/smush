@@ -42,4 +42,4 @@ Usage of /var/folders/4x/6f286ndx6b71brrg5s8j_wx40000gn/T/go-build1093124682/b00
 ^_^[user@tethys:~/devel/github.com/glassrye/smush]$
 ```
 
-## NOTE: DB features are under construction
+### NOTE: DB features are under construction

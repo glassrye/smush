@@ -16,10 +16,11 @@ import (
 )
 
 type config struct {
-	User string
-	Pass string
-	Host string
+	User     string
+	Pass     string
+	Host     string
 	Database string
+	Backup   bool
 }
 
 // I think I should refactor and create a type that defines a file and the attributes it can have
@@ -35,12 +36,12 @@ func main() {
 	year, month, day := time.Now().Date()
 	defMatch := fmt.Sprintf("%v-%02d-%v", year, int(month), day-1)
 
-	old := time.Now()	
+	old := time.Now()
 	oldTime := old.AddDate(0, 0, -90)
 	oldMatch := fmt.Sprintf("%v-%02d-%v", oldTime.Year(), int(oldTime.Month()), oldTime.Day())
 	fmt.Println("Old Match ", oldMatch)
 
-
+	flag.BoolVar(&c.Backup, "b", false, "Do you want to backup the files to a bucket and track in a database")
 	flag.StringVar(&c.User, "user", "", "The user name for the database connection. AKA: DB_USER env variable")
 	flag.StringVar(&c.Pass, "pass", "", "The password for the database connection. AKA: DB_PASS env variable")
 	flag.StringVar(&c.Host, "host", "", "The hostname for the database connection. AKA: DB_HOST env variable")
@@ -63,19 +64,19 @@ func main() {
 		fmt.Println("Skipping local environment loading")
 	}
 
-	if c.User == "" && os.Getenv("DB_USER") == "" {
+	if c.Backup && os.Getenv("DB_USER") == "" {
 		fmt.Printf("You must specify a user name or set the DB_USER variable")
 		return
 	}
-	if c.Pass == "" && os.Getenv("DB_PASS") == "" {
+	if c.Backup && os.Getenv("DB_PASS") == "" {
 		fmt.Printf("You must specify a user password or set the DB_PASS variable")
 		return
 	}
-	if c.Host == "" && os.Getenv("DB_HOST") == "" {
+	if c.Backup && os.Getenv("DB_HOST") == "" {
 		fmt.Printf("You must specify a database host or set the DB_HOST variable")
 		return
 	}
-	if c.Database == "" && os.Getenv("DB_NAME") == "" {
+	if c.Backup && os.Getenv("DB_NAME") == "" {
 		fmt.Printf("You must specify a database name or set the DB_NAME variable")
 		return
 	}
@@ -109,21 +110,21 @@ func main() {
 	// TODO: Create a channel and wait group
 	// Let the channel hold the return from Compress()
 	// Send a pointer to the waitgroup to Compress() and have Compress() defer the close
-	// Ask about this in gophers. 
-	for _, f := range  fl {
+	// Ask about this in gophers.
+	for _, f := range fl {
 		// fmt.Printf("File Path: %s\n", f)
 		arch := models.Archive{
-			Archived: false,
-			Online: true,
-			OriginLoc: f,
+			Archived:      false,
+			Online:        true,
+			OriginLoc:     f,
 			ArchiveBucket: "dd-kaia-test", // This will become dynamic
-			ArchivePrefix: "jbk-test", // this will also become dynamic
+			ArchivePrefix: "jbk-test",     // this will also become dynamic
 		}
 		arch.CompressLoc, arch.OriginHash, arch.CompressHash, err = process.Compress(arch.OriginLoc)
 
 		if err != nil {
 			fmt.Printf("Error processing file: %v\n", err)
-			return 
+			return
 		}
 		res, err := arch.AddRecord()
 		if err != nil {
@@ -138,4 +139,3 @@ func main() {
 		fmt.Printf("Insert ID: %s New File Hash: %s\n", s, arch.CompressHash)
 	}
 }
-

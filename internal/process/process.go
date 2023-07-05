@@ -12,12 +12,6 @@ import (
 
 // Compress - takes a string that is a path to a file. it then compresses the file and returns
 // the gzip file path, the original file hash, the gzip file hash, and an error
-
-// With a refactor but that has to be in the models package. You can't define new methods outside
-// the original package that exports the type
-// compress could take a pointer to an Archive type and only return an error
-// then I can add in a channel that takes an error only. We can assume it worked
-// and we can add a logger to the Archive so we don't have to assume
 func Compress(f string) (string, string, string, error) {
 	// Create gzip filepath string and "open" it
 	comPath := f + ".gz"

@@ -36,10 +36,10 @@ func main() {
 	year, month, day := time.Now().Date()
 	defMatch := fmt.Sprintf("%v-%02d-%v", year, int(month), day-1)
 
-	old := time.Now()
-	oldTime := old.AddDate(0, 0, -90)
-	oldMatch := fmt.Sprintf("%v-%02d-%v", oldTime.Year(), int(oldTime.Month()), oldTime.Day())
-	fmt.Println("Old Match ", oldMatch)
+	// Not even sure what I was trying to do below
+	//old := time.Now()
+	//oldTime := old.AddDate(0, 0, -90)
+	//oldMatch := fmt.Sprintf("%v-%02d-%v", oldTime.Year(), int(oldTime.Month()), oldTime.Day())
 
 	flag.BoolVar(&c.Backup, "b", false, "Do you want to backup the files to a bucket and track in a database")
 	flag.StringVar(&c.User, "user", "", "The user name for the database connection. AKA: DB_USER env variable")

@@ -49,8 +49,8 @@ func Compress(f string) (string, string, string, error) {
 	// the writer
 	var buf bytes.Buffer
 	zw := gzip.NewWriter(&buf)
+	defer zw.Close()
 	zw.Write(data)
-	zw.Close()
 
 	// Now copy the buffer data into the gzip file created at the top
 	// of this function

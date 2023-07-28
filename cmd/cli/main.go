@@ -86,7 +86,7 @@ func main() {
 	for _, f := range fl {
 		// fmt.Printf("File Path: %s\n", f)
 		compFile := f + ".gz"
-		arch := models.Archive{
+		arch := &models.Archive{
 			Archived:      false,
 			Online:        true,
 			OriginLoc:     f,
@@ -95,7 +95,6 @@ func main() {
 			ArchivePrefix: "jbk-test",   // this will also become dynamic
 		}
 		// arch.CompressLoc, arch.OriginHash, arch.CompressHash, err = process.Compress(arch.OriginLoc)
-		fmt.Println("Original File: ", f)
 		err = arch.Compress()
 		if err != nil {
 			fmt.Println(err)

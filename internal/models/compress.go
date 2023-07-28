@@ -11,55 +11,70 @@ import (
 )
 
 // Compress is a receiver of type Archive
-// it expect a pointer as we add the the value of OriginHash and CompressHash
-// these are tracked variables in the DB
+// it expect a pointer as we add the value of OriginHash and CompressHash
+// these can be tracked as variables in the DB
 func (a *Archive) Compress() error {
-	fmt.Printf("Orig: %v  Comp: %v\n", a.OriginLoc, a.CompressLoc) 
-
-    comp, err := os.OpenFile(a.CompressLoc, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	// Read the data from the original fine into a byte slice
+	srcData, err := os.ReadFile(a.OriginLoc)
 	if err != nil {
 		return err
 	}
 
-	data, err := os.ReadFile(a.OriginLoc)
+	srcFile, err := os.Open(a.OriginLoc)
 	if err != nil {
 		return err
 	}
 
-	oFile, err := os.Open(a.OriginLoc)
-	if err != nil {
-		return nil
-	}
-	oHash, err := util.GenHash(oFile)
+	dstFile, err := os.OpenFile(a.CompressLoc, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		return err
 	}
-	if err = oFile.Close(); err != nil {
+
+	// Create a hash from that original file
+	srcHash, err := util.GenHash(srcFile)
+	if err != nil {
+		return err
+	}
+
+	if err = srcFile.Close(); err != nil {
 		return err
 	}
 
 	var buf bytes.Buffer
-	zw := gzip.NewWriter(&buf)
-	zw.Write(data)
-	zw.Close()
 
-	if _, err := io.Copy(comp, &buf); err != nil {
-		fmt.Printf("error copying data from buffer: %v", err)
+	gzipWriter := gzip.NewWriter(&buf)
+	gzipWriter.Write(srcData)
+
+	if err = gzipWriter.Flush(); err != nil {
+		return err
 	}
+
+	if err = gzipWriter.Close(); err != nil {
+		return err
+	}
+
+	if _, err := io.Copy(dstFile, &buf); err != nil {
+		fmt.Printf("error writing file: %v", err)
+		return err
+	}
+
+	dstHash, err := util.GenHash(dstFile)
+	if err != nil {
+		return err
+	}
+
+	if err = dstFile.Close(); err != nil {
+		fmt.Println("erorr closing file: ", err)
+		return err
+	}
+	// Set the hashes in to the archive struct and return a nil error
+	a.CompressHash = dstHash
+	a.OriginHash = srcHash
+
+	fmt.Println("Original Hash ", a.OriginHash, "Compress hash ", a.CompressHash)
 	if err = os.Remove(a.OriginLoc); err != nil {
-		fmt.Printf("there was an error removing the file: %s\n", a.OriginLoc)
+		fmt.Println("error removing original file: ", err)
 		return err
 	}
-	gFile, err := os.Open(a.CompressLoc)
-	if err != nil {
-		return err
-	}
-	gHash, err := util.GenHash(gFile)
-	if err != nil {
-		return err
-	}
-	a.CompressHash = gHash
-	a.OriginHash = oHash
-
 	return nil
 }

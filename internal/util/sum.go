@@ -16,7 +16,7 @@ func GenHash(file *os.File) (string, error) {
 	}
 	hashInBytes := newHash.Sum(nil)[:16]
 	hashString = hex.EncodeToString(hashInBytes)
-	
+
 	return hashString, nil
 
 }

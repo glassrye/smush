@@ -57,9 +57,15 @@ func (a *Archive) Compress() error {
 		fmt.Printf("error writing file: %v", err)
 		return err
 	}
-
-	dstHash, err := util.GenHash(dstFile)
+	hashFile, err := os.Open(a.CompressLoc)
 	if err != nil {
+		fmt.Printf("error opening compress file: %v", err)
+		return err
+	}
+	defer hashFile.Close()
+	dstHash, err := util.GenHash(hashFile)
+	if err != nil {
+		fmt.Printf("error generating hash for %s with error: %v", a.CompressLoc, hashFile.Name())
 		return err
 	}
 

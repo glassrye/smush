@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"os"
@@ -33,7 +32,7 @@ func main() {
 		}
 	}
 
-	if c.backup {
+	if c.track {
 		if c.user == "" && os.Getenv("DB_USER") == "" {
 			fmt.Printf("You must specify a user name or set the DB_USER variable")
 			return
@@ -46,16 +45,17 @@ func main() {
 			fmt.Printf("You must specify a database host or set the DB_HOST variable")
 			return
 		}
-		if c.database == "" && os.Getenv("DB_NAME") == "" {
+		if c.db == "" && os.Getenv("DB_NAME") == "" {
 			fmt.Printf("You must specify a database name or set the DB_NAME variable")
 			return
 		}
-		dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", c.user, c.pass, c.host, c.database)
-		models.DB, err = sql.Open("mysql", dsn)
+		/*dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", c.user, c.pass, c.host, c.db)
+		models.DB.DB, err = sql.Open("mysql", dsn)
 		if err != nil {
 			fmt.Printf("Error with DB: %v", err)
 		}
-		defer models.DB.Close()
+		defer models.DB.DB.Close()()
+		*/
 	}
 
 	if c.watchDir == "" {
@@ -94,6 +94,7 @@ func main() {
 			ArchiveBucket: "smush-test", // This will become dynamic
 			ArchivePrefix: "jbk-test",   // this will also become dynamic
 		}
+
 		// arch.CompressLoc, arch.OriginHash, arch.CompressHash, err = process.Compress(arch.OriginLoc)
 		err = arch.Compress()
 		if err != nil {
@@ -105,8 +106,17 @@ func main() {
 			fmt.Printf("Error processing file: %v\n", err)
 			return
 		}
-		if c.backup {
-			res, err := arch.AddRecord()
+		if c.track {
+			d, err := models.NewDatabase(c.user, c.pass, c.db, c.host)
+			if err != nil {
+				fmt.Printf("Error getting DB connection: %v", err)
+				return 
+			}
+			t := models.Tracker{
+				DB: d,
+			}
+			t.Archive = *arch
+			res, err := t.AddRecord()
 			if err != nil {
 				fmt.Printf("Error adding record: %v\n", err)
 				continue

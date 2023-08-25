@@ -18,5 +18,5 @@ clean:
 
 build:
 	@echo "Building Binary"
-	env GOOS=linux GOARCH=amd64 go build -o build/smush-amd64 cmd/cli/main.go  
-	env GOOS=darwin GOARCH=arm64 go build -o build/smush-darwin cmd/cli/main.go
+	env GOOS=linux GOARCH=amd64 go build -o build/smush-amd64 cmd/cli/*.go  
+	env GOOS=darwin GOARCH=arm64 go build -o build/smush-darwin cmd/cli/*.go

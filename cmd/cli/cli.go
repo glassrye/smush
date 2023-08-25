@@ -113,6 +113,7 @@ func getCli() *config {
 // var compressFlag, track, backup bool
 // var dir, matchName, suffix, db, host, user, bucket, folder string
 
+// GetCli - returns a pointer to a config struct config
 func getCli() *config {
 	 c := &config{}
 	 var rootCmd = &cobra.Command{

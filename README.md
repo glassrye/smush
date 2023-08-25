@@ -1,4 +1,5 @@
 # SMUSH
+
 Please consider this currently like... pre-pre-alpha. I doodle when I feel like it.
 
 Smush is just a simple utility that uses the Gzip library to do the following:
@@ -19,27 +20,57 @@ Smush is just a simple utility that uses the Gzip library to do the following:
 
 ---
 
+## Build
+
 ```
-O_O[user@tethys:~/devel/github.com/glassrye/smush]$ go run cmd/cli/main.go  --help
-Old Match  2022-10-16
-Usage of /var/folders/4x/6f286ndx6b71brrg5s8j_wx40000gn/T/go-build1093124682/b001/exe/main:
-  -db string
-        The db name for the database connection. AKA: DB_NAME env variable
-  -dir string
-        The directory to watch for files.
-  -e string
-        The environment variable file.
-  -host string
-        The hostname for the database connection. AKA: DB_HOST env variable
-  -m string
-        The string to match for files. (default "2023-01-13")
-  -pass string
-        The password for the database connection. AKA: DB_PASS env variable
-  -s string
-        The filename suffix to use. (default "log")
-  -user string
-        The user name for the database connection. AKA: DB_USER env variable
-^_^[user@tethys:~/devel/github.com/glassrye/smush]$
+make build
 ```
 
-### NOTE: DB features are under construction
+This produces an amd64 and darwin build. Feel free to create a PR for others. I just don't wanna..
+
+```
+^_^[james@tethys ~/devel/github.com/glassrye/smush] (bucket-db) $ tree build/
+build/
+├── smush-amd64
+└── smush-darwin
+
+1 directory, 2 files
+^_^[james@tethys ~/devel/github.com/glassrye/smush] (bucket-db) $
+
+```
+
+It is up to you to use the `db/init.sql` file to create a database for your self. You DO NOT have to actually track files in a database, but you'll need if you want to! :)
+
+After you have created the database and run `make build` you can check out the options:
+
+```
+^_^[james@tethys ~/devel/github.com/glassrye/smush] (bucket-db) $ ./build/smush-darwin --help
+Usage:
+  smush [flags]
+
+Flags:
+  -b, --backup          Enable backup
+      --bucket string   Bucket name
+  -c, --compress        Enable compression (required)
+      --db string       Database name
+  -d, --dir string      Directory for compression
+      --folder string   Folder in bucket
+  -h, --help            help for smush
+      --host string     Host address
+      --match string    Matching name for files
+      --pass string     Database user pass
+      --suff string     Suffix for files
+  -T, --track           Enable tracking
+      --user string     Database user name
+Old Match  2023-05-26
+You must specify a directory to watch.
+^_^[james@tethys ~/devel/github.com/glassrye/smush] (bucket-db) $
+```
+
+Here is an example of how I use `smush` to compress some files and create an entry in a database for later interrogation.
+
+```
+./build/smush-darwin -c -d ~/tmp/smush/ --match test_comp --suff log -T --db smushTracker --host localhost --user postgres --pass testme
+```
+
+### NOTE: GCP / S3 buckets are under construction

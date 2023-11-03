@@ -8,15 +8,15 @@ SHELL := bash
 
 test:
 	@echo "Running test endpoint with flags..."
-	go run cmd/cli/main.go -dir /Users/user/tmp/smush/ -m file -s log -m file_7 -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
-	go run cmd/cli/main.go -dir /Users/user/tmp/smush/ -m file -s log -m file_8 -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
-	go run cmd/cli/main.go -dir /Users/user/tmp/smush/ -s log -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
+	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -m file -s log -m file_7 -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
+	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -m file -s log -m file_8 -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
+	go run cmd/cli/main.go -dir /Users/james/tmp/smush/ -s log -user logger -pass <pass> -host <host_ip> -db logtrack -e local.env
 
 clean:
 	@echo "Cleaning test directory..."
-	-gunzip /Users/user/tmp/smush/*.gz
+	-gunzip /Users/james/tmp/smush/*.gz
 
-build:
+binary:
 	@echo "Building Binary"
-	env GOOS=linux GOARCH=amd64 go build -o build/smush-amd64 cmd/cli/*.go  
-	env GOOS=darwin GOARCH=arm64 go build -o build/smush-darwin cmd/cli/*.go
+	-env GOOS=linux GOARCH=amd64 go build -o build/smush-amd64 cmd/cli/*.go  
+	-env GOOS=darwin GOARCH=arm64 go build -o build/smush-darwin cmd/cli/*.go

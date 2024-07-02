@@ -3,162 +3,126 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 
+	"github.com/deepdyve/compress-logs/internal/compress"
 	"github.com/spf13/cobra"
 )
 
-type config struct {
-	user            string
-	pass            string
-	host            string
-	db        string
-	watchDir        string
-	match           string
-	suffix          string
-	backupBucket    string
-	backupPrefix    string
-	backupProviders []string
-	envFile         string
-	track           bool
-	backup          bool
-	compress bool
-}
-
-// getCli parses command line flags and returns a config object that can be used for archiving files.
-/*
-func getCli() *config {
-	var c config
-
-	var rootCmd = &cobra.Command{Use: "smush"}
-
-	var cmdBackup = &cobra.Command{
-		Use:   "backup",
-		Short: "Backup command",
-		Run: func(cmd *cobra.Command, args []string) {
-			c.backupProviders = args
-			c.backup = true
-		},
-	}
-	cmdBackup.Flags().StringVar(&c.backupBucket, "bucket", "", "Specify the bucket name")
-	cmdBackup.Flags().StringVar(&c.backupPrefix, "prefix", "", "Specify the prefix, aka folder, as a location")
-
-	var cmdTrack = &cobra.Command{
-		Use:   "track",
-		Short: "Track command",
-		Run: func(cmd *cobra.Command, args []string) {
-			c.track = true
-		},
-	}
-	cmdTrack.Flags().StringVar(&c.host, "host", "", "The hostname or IP addr of the database")
-	cmdTrack.Flags().StringVar(&c.user, "user", "", "The DB user string")
-	cmdTrack.Flags().StringVar(&c.pass, "pass", "", "The DB user password string")
-	cmdTrack.Flags().StringVar(&c.dsn, "db", "", "The DB name (where the tables be, yarr....")
-
-	var cmdFiles = &cobra.Command{
-		Use:   "compress",
-		Short: "Compress files command",
-		Run:   func(cmd *cobra.Command, args []string) {},
-	}
-	cmdFiles.Flags().StringVar(&c.match, "match", "", "File name match. Like a regex.")
-	cmdFiles.Flags().StringVar(&c.suffix, "suff", "", "The suffix of the file, e.g., .log or .txt")
-	cmdFiles.Flags().StringVar(&c.watchDir, "dir", "", "The directory to look in for the files in")
-
-	// I haven't decided if I want to actually do this yet. Seems like bullshit extra stuff to me
-	// but I could be wrong so I'm leaving this hear for the time being
-	/*var cmdEnv = &cobra.Command{
-		Use:   "env",
-		Short: "Env command",
-		Run:   func(cmd *cobra.Command, args []string) {},
-	}
-	cmdEnv.Flags().StringVar(&c.envFile, "env", "", "An optional environment file")
-	*/
-
-	// rootCmd.AddCommand(cmdBackup, cmdTrack, cmdFiles, cmdEnv)
-	/*
-	rootCmd.AddCommand(cmdBackup, cmdTrack, cmdFiles)
-	if err := rootCmd.Execute(); err != nil {
-		log.Fatalf("there was an error parsing arguments: %v", err)
-	}
-	return &c
-}
-	*/
-
-
-/*var rootCmd = &cobra.Command{
-	Use: "yourcli",
+var compressCmd = &cobra.Command{
+	Use:   "compress",
+	Short: "Compress files",
 	Run: func(cmd *cobra.Command, args []string) {
-		if !c.compress {
-			fmt.Println("Error: --compress flag is required!")
-			os.Exit(1)
-		}
-		fmt.Println("Compression enabled.")
-		fmt.Printf("Directory: %s\n", dir)
-		fmt.Printf("Matching Name: %s\n", matchName)
-		fmt.Printf("Suffix: %s\n", suffix)
-		
-		if c.track {
-			fmt.Println("Tracking enabled.")
-			fmt.Printf("Database: %s\n", db)
-			fmt.Printf("Host: %s\n", host)
-			fmt.Printf("User: %s\n", user)
-		}
-		if c.backup {
-			fmt.Println("Backup enabled.")
-			fmt.Printf("Bucket: %s\n", bucket)
-			fmt.Printf("Folder: %s\n", folder)
-		}
+		directory, _ := cmd.Flags().GetString("directory")
+		suffix, _ := cmd.Flags().GetString("suffix")
+		level, _ := cmd.Flags().GetInt("level")
+		match, _ := cmd.Flags().GetString("match")
+
+		// Implement your compression logic here
+		fmt.Printf("Compressing: Directory=%s, Suffix=%s, Level=%d, Match=%s\n", directory, suffix, level, match)
+
 	},
-}*/
-// var compressFlag, track, backup bool
-// var dir, matchName, suffix, db, host, user, bucket, folder string
-
-// GetCli - returns a pointer to a config struct config
-func getCli() *config {
-	 c := &config{}
-	 var rootCmd = &cobra.Command{
-		Use: "smush",
-		Run: func(cmd *cobra.Command, args []string) {
-			if !c.compress {
-				fmt.Println("Error: --compress flag is required!")
-				os.Exit(1)
-			}
-			fmt.Println("Compression enabled.")
-			fmt.Printf("Directory: %s\n", c.watchDir)
-			fmt.Printf("Matching Name: %s\n", c.match)
-			fmt.Printf("Suffix: %s\n", c.suffix)
-			
-			if c.track {
-				fmt.Println("Tracking enabled.")
-				fmt.Printf("Database: %s\n", c.db)
-				fmt.Printf("Host: %s\n", c.host)
-				fmt.Printf("User: %s\n", c.user)
-				fmt.Printf("Pass: %s\n", c.pass)
-			}
-			if c.backup {
-				fmt.Println("Backup enabled.")
-				fmt.Printf("Bucket: %s\n", c.backupBucket)
-				fmt.Printf("Folder: %s\n", c.backupPrefix)
-			}
-		}, 
-	}
-	rootCmd.Flags().BoolVarP(&c.compress, "compress", "c", false, "Enable compression (required)")
-	rootCmd.Flags().StringVarP(&c.watchDir, "dir", "d", "", "Directory for compression")
-	rootCmd.Flags().StringVar(&c.match, "match", "", "Matching name for files")
-	rootCmd.Flags().StringVar(&c.suffix, "suff", "", "Suffix for files")
-
-	rootCmd.Flags().BoolVarP(&c.track, "track", "T", false, "Enable tracking")
-	rootCmd.Flags().StringVar(&c.db, "db", "", "Database name")
-	rootCmd.Flags().StringVar(&c.host, "host", "", "Host address")
-	rootCmd.Flags().StringVar(&c.user, "user", "", "Database user name")
-	rootCmd.Flags().StringVar(&c.pass, "pass", "", "Database user pass")
-
-	rootCmd.Flags().BoolVarP(&c.backup, "backup", "b", false, "Enable backup")
-	rootCmd.Flags().StringVar(&c.backupBucket, "bucket", "", "Bucket name")
-	rootCmd.Flags().StringVar(&c.backupPrefix, "folder", "", "Folder in bucket")
-	if err := rootCmd.Execute(); err != nil {
-		log.Fatalf("there was an error parsing arguments: %v", err)
-	}
-
-	return c	
 }
+
+var trackCmd = &cobra.Command{
+	Use:   "track",
+	Short: "Track files",
+	Run: func(cmd *cobra.Command, args []string) {
+		provider, _ := cmd.Flags().GetString("provider")
+		bucket, _ := cmd.Flags().GetString("bucket")
+		prefix, _ := cmd.Flags().GetString("prefix")
+		db, _ := cmd.Flags().GetString("db")
+		user, _ := cmd.Flags().GetString("user")
+		pass, _ := cmd.Flags().GetString("pass")
+
+		// Implement your tracking logic here
+		fmt.Printf("Tracking: Provider=%s, Bucket=%s, Prefix=%s, DB=%s, User=%s, Pass=%s\n", provider, bucket, prefix, db, user, pass)
+	},
+}
+
+func cli() {
+	compressCmd.Flags().StringP("directory", "d", "", "Directory to compress")
+	compressCmd.Flags().BoolP("recurse", "r", false, "Recurse the original directory")
+	compressCmd.Flags().StringP("suffix", "s", "", "File suffix to filter")
+	compressCmd.Flags().IntP("level", "l", 0, "Compression level")
+	compressCmd.Flags().StringP("match", "m", "", "File matching pattern")
+	compressCmd.Flags().String("provider", "", "Cloud provider")
+	compressCmd.Flags().String("bucket", "", "Bucket name")
+	compressCmd.Flags().String("prefix", "", "File prefix")
+	compressCmd.Flags().String("db", "", "Database name")
+	compressCmd.Flags().String("user", "", "Database user")
+	compressCmd.Flags().String("pass", "", "Database password")
+	compressCmd.MarkFlagRequired("directory") // Make directory flag required for compress command
+
+	var rootCmd = &cobra.Command{
+		Use: "smush",
+	}
+
+	var compressCmd = &cobra.Command{
+		Use:   "compress",
+		Short: "Compress and Archive Files with Tracking",
+		Run: func(cmd *cobra.Command, args []string) {
+			dir, _ := cmd.Flags().GetString("directory")
+			suff, _ := cmd.Flags().GetString("suffix")
+			level, _ := cmd.Flags().GetInt("level")
+			match, _ := cmd.Flags().GetString("match")
+			prov, _ := cmd.Flags().GetStringSlice("provider")
+			bucket, _ := cmd.Flags().GetString("bucket")
+			prefix, _ := cmd.Flags().GetString("prefix")
+			db, _ := cmd.Flags().GetString("db")
+			user, _ := cmd.Flags().GetString("user")
+			pass, _ := cmd.Flags().GetString("pass")
+			recurse, _ := cmd.Flags().GetBool("recurse")
+
+			a := &compress.Archive{}
+			a.ArchiveBucket = bucket
+			a.ArchivePrefix = prefix
+			a.Recurse = recurse
+			a.OriginLoc = dir
+			a.DBUser = user
+			a.DBPass = pass
+			a.DBHost = db
+			a.Match = match
+			a.Suffix = suff
+			a.Providers = prov
+			a.Level = level
+
+			// err := runCompress(a, a.OriginLoc, suff, match)
+			err := a.Compress()
+			if err != nil {
+				log.Fatalf("there was a fatal error: %v", err)
+				return
+			}
+		},
+	}
+	rootCmd.AddCommand(compressCmd)
+	if err := rootCmd.Execute(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func runCompress(a *compress.Archive, d, s, m string) error {
+	fmt.Printf("")
+	return nil
+}
+
+/*
+func runCompress(d,s,m,p,b,pre,db,us,pa string, l int, rec bool) error {
+	dir, err := os.ReadDir(d)
+	if err != nil {
+		return err
+	}
+	for _, v := range dir {
+		a := &compress.Archive{}
+		if !v.IsDir() {
+			if strings.Contains(v.Name(), s) {
+				a.OriginLoc = fmt.Sprintf("%s/%s", d, v.Name())
+				a.CompressLoc = fmt.Sprintf("%s/%s.gz", d, v.Name())
+				err := a.Compress()
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+}
+*/

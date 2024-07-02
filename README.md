@@ -74,3 +74,11 @@ Here is an example of how I use `smush` to compress some files and create an ent
 ```
 
 ### NOTE: GCP / S3 buckets are under construction
+
+Feature List
+
+- [x] Compress Files (gduh...)
+- [x] Match files by regex
+- [x] Specify file suffix name, e.g., [ --suff log || --suff txt ]
+- [ ] Backup files to bucket (S3 / GCP / R2)
+- [ ] Track files in data base (pre-compress hash, after compress hash, backup bucket location)

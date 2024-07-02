@@ -1,4 +1,4 @@
-package models
+package compress
 
 import (
 	"bytes"
@@ -9,6 +9,26 @@ import (
 
 	"github.com/deepdyve/compress-logs/internal/util"
 )
+type Archive struct {
+	Archive     bool   `json:"archived"`
+	Online        bool   `json:"online"`
+	Recurse       bool   `json:"recurse"`
+	OriginHost    string `json:"origin_host"`
+	OriginLoc     string `json:"disk_loc,omitempty"`
+	CompressLoc   string `json:"compress_loc,omitempty"`
+	ArchiveBucket string `json:"archive_bucket"`
+	ArchivePrefix string `json:"archive_prefix"`
+	OriginHash    string `json:"origin_hash"`
+	CompressHash  string `json:"compress_hash"`
+	LastUpdate    string `json:"last_update"`
+	DBHost string `json:"db_host,omitempty"`
+	DBUser string `json:"db_user,omitempty"`
+	DBPass string `json:"_,omitempty"`
+	Match string `json:"match,omitempty"`
+	Suffix string `json:"suffix,omitempty"`
+	Providers []string `json:"providers,omitempty"`
+	Level int `json:"level,omitempty"`
+}
 
 // Compress is a receiver of type Archive
 // it expect a pointer as we add the value of OriginHash and CompressHash
